@@ -1,5 +1,29 @@
 <!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>자유의 여신상 · 스마트폰 Pop-out 3D</title><style>
 *{box-sizing:border-box}body{margin:0;background:#101b2a;color:#fff;font-family:system-ui,'Malgun Gothic',sans-serif}header{text-align:center;padding:12px 6px}h1{font-size:clamp(18px,3vw,28px);margin:0}header p{color:#a9c2d9;margin:4px}.viewer{width:min(98vw,1200px);height:min(72vh,760px);min-height:330px;margin:auto;position:relative;overflow:hidden;border:1px solid #35516d;border-radius:12px;background:linear-gradient(130deg,#233c55,#0b1726);touch-action:none}#video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}#content{position:absolute;inset:0;touch-action:none;will-change:transform}#bg{position:absolute;left:50%;top:50%;width:min(78%,840px);height:auto;object-fit:contain;transform:translate(-50%,-50%);pointer-events:none}#gl{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}#msg{position:absolute;top:8px;left:8px;background:#07172ccf;border-radius:7px;padding:8px 12px;font-size:13px;max-width:85%}.buttons{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin:12px auto;max-width:1150px;padding:0 8px}button{background:#294e70;color:white;border:1px solid #7198b7;border-radius:8px;padding:10px 12px;cursor:pointer}button:active{background:#4a7397}.tuning{max-width:900px;margin:4px auto 10px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;font-size:13px;color:#d6e8f5}.tuning label{display:flex;align-items:center;gap:6px}.tuning input{width:110px}footer{text-align:center;font-size:12px;color:#b8ccdc;padding:4px 8px 20px;line-height:1.6}
+
+/* 모바일: 카메라 시작 직후에도 주요 조작 버튼을 항상 노출 */
+@media (max-width: 700px) {
+ header {padding:7px 6px 5px}
+ h1 {font-size:clamp(16px,4.5vw,23px)}
+ header p {font-size:11px;margin:2px}
+ .viewer {width:calc(100% - 12px);height:55vh;height:55dvh;min-height:0;max-height:620px}
+ .buttons {position:fixed;z-index:50;left:0;right:0;bottom:0;margin:0;
+   padding:7px 7px max(9px,env(safe-area-inset-bottom));
+   display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;
+   max-width:none;background:rgba(13,26,43,.97);
+   border-top:1px solid #486782;box-shadow:0 -5px 18px #0006}
+ .buttons button {min-width:0;min-height:43px;padding:7px 2px;
+   font-size:clamp(10px,2.5vw,13px);line-height:1.2;white-space:normal}
+ .buttons button:last-child {grid-column:span 1}
+ main {padding-bottom:145px}
+ .tuning {padding:4px 9px;gap:7px;font-size:11px}
+ .tuning input {width:85px}
+ footer {font-size:10px}
+}
+@media (max-width: 380px) {
+ .buttons button {font-size:10px}
+ .viewer {height:51vh;height:51dvh}
+}
 </style></head><body><header><h1>🗽 자유의 여신상 · 스마트폰 Pop-out 3D</h1><p>스마트폰 테두리 돌출 착시 · 자유의 여신상 정면 · 비율 고정 개선</p></header><main><div class="viewer" id="viewer"><video id="video" autoplay muted playsinline></video><div id="content"><img id="bg" src="./liberty-phone-background.png" alt="뉴욕 항구가 표시된 스마트폰"><canvas id="gl"></canvas></div><div id="msg">3D 모델을 불러오는 중…</div></div><div class="buttons"><button id="camera">📷 카메라 켜기</button><button id="place">📍 위치 배치</button><button id="left">↶ 여신상 왼쪽</button><button id="right">↷ 여신상 오른쪽</button><button id="plus">＋ 전체 확대</button><button id="minus">－ 전체 축소</button><button id="reset">처음 위치</button></div><div class="tuning"><label>여신상 방향 <input id="yaw" type="range" min="-180" max="180" step="1" value="-119"><span id="yawVal">-119°</span></label><label>여신상 높이 <input id="height" type="range" min="300" max="1100" value="625" step="5"><span id="heightVal">625</span></label><label>좌우 <input id="posX" type="range" min="0" max="1000" value="280" step="5"></label><label>상하 <input id="posY" type="range" min="0" max="1000" value="720" step="5"></label></div><footer>한 손가락 드래그: 전체 이동 · 두 손가락: 전체 회전·확대/축소 · 여신상 방향 슬라이더: 얼굴 정면 맞춤<br>카메라를 켠 뒤 [위치 배치]를 누르고 화면을 터치하세요. 카메라 화면 위에 겹치는 합성 체험이며 실제 공간 추적 AR은 아닙니다.</footer></main>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"}}</script><script type="module">
 import * as THREE from 'three';import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
