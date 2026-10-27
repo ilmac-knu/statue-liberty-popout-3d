@@ -22,9 +22,12 @@ button:hover{background:#315a7f}.small{text-align:center;font-size:12px;padding:
 <button id="plus">＋ 확대</button><button id="minus">－ 축소</button><button id="frame">테두리 표시/숨김</button>
 </div>
 <p class="small">마우스 드래그/손가락으로 여신상 회전 · 휠/두 손가락으로 확대·축소<br>※ 브라우저 안의 가상 스마트폰에서 구현하는 원근 착시입니다. 실제 기기 화면 밖에 표시되는 것은 아닙니다.</p>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"}}
+</script>
 <script type="module">
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js';
-import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/loaders/GLTFLoader.js';
+import * as THREE from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 const stage=document.getElementById('stage'), canvas=document.getElementById('scene'), notice=document.getElementById('notice');
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;
@@ -67,10 +70,10 @@ function mount(g){
  notice.style.display='none';
 }
 const loader=new GLTFLoader();
-loader.load('./statue_of_liberty_1.glb',gltf=>mount(gltf.scene),undefined,err=>{
+loader.load('./statue_of_liberty_1.glb',gltf=>mount(gltf.scene),progress=>{if(progress.total>0)notice.textContent=`3D 모델 불러오는 중… ${Math.round(progress.loaded/progress.total*100)}%`;},err=>{
  console.warn('GLB 로드 실패:',err);
  mount(fallback());
- notice.style.display='block';notice.textContent='GLB 파일을 찾지 못해 임시 모형을 표시합니다. 저장소에 statue_of_liberty_1.glb를 업로드하세요.';
+ notice.style.display='block';notice.textContent='GLB 로딩 실패: 임시 모형 표시 중. 저장소 최상위의 statue_of_liberty_1.glb 파일명과 업로드 여부를 확인하세요.';
 });
 function resize(){const w=stage.clientWidth,h=stage.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();camera.position.set(7.5,9.3,w<600?19:15);camera.lookAt(0,1.15,0)}
 new ResizeObserver(resize).observe(stage);resize();
